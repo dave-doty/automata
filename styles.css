@@ -1,0 +1,131 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+html, body {
+    margin: 0px;
+    padding: 5px;
+    font-family: 'Roboto', sans-serif;
+}
+
+div.input_processed, div.enter_new_file, div.tm_output {
+    display: inline;
+}
+
+#drop-zone {
+    border: 2px dashed #bbb;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    color: #bbb;
+    font-size: 20pt;
+    font-weight: bold;
+    padding: 25px;
+    text-align: center;
+}
+
+#drop-zone.hover {
+    background-color: #def;
+    border-color: #777;
+    color: #777;
+}
+
+.tt {
+    font-family: "Consolas";
+    display:inline;
+}
+
+.title {
+    margin: "2pt";
+    padding: "2pt";
+    font-weight: "bold";
+    font-size: "20px";
+    background-color: "lightgray";
+}
+
+.transition_header_entry {
+    background-color: #dddddd;
+    padding: 3px;
+}
+
+.transition_entry {
+    border: 3px solid #bbb;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.production_rule_entry {
+    background-color: #dddddd;
+    padding: 3px;
+}
+
+.production_rule_entry {
+    border: 3px solid #bbb;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.transition_entry_accept {
+    border: 5px solid #0c0;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.transition_entry_reject {
+    border: 5px solid #f00;
+    padding: 3px;
+    border-radius: 8px;
+}
+
+.current {
+    background-color: cyan;
+}
+
+
+.regex_label {
+    width: 60px;
+    display:inline-block;
+}
+
+.tm_output {
+    display: inline;
+}
+
+
+td.tape_cell {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+th.tape_header_cell, td.tape_cell {
+    padding: 5px;
+    width: 18px;
+    text-align: center;
+}
+
+table#tape_table {
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.transition_output_field {
+    padding-left: 8px;
+    padding-right: 8px;
+    display: inline;
+}
+
+#error_message_containing_div {
+    overflow: auto;
+}
+
+#error_message {
+    color: red;
+    white-space: pre-wrap;
+}
+
+.hover-item {
+	background-color: white;
+    text-decoration: none;
+}
+
+.hover-item:hover {
+	background-color: lightblue;
+}

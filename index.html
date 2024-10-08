@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>simulator</title>
+        <link rel="stylesheet" href="styles.css">
+        <script src="src/ace-src-min/ace.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+
+    <body>
+        <script src="src/mode-dfa.js" type="text/javascript" charset="utf-8"></script>
+        <script src="src/mode-nfa.js" type="text/javascript" charset="utf-8"></script>
+        <script src="src/mode-regex.js" type="text/javascript" charset="utf-8"></script>
+        <script src="src/mode-cfg.js" type="text/javascript" charset="utf-8"></script>
+        <script src="src/mode-tm.js" type="text/javascript" charset="utf-8"></script>
+        <script src="src/get-ace-themes.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- normally would import a javascript file compiled from Elm, but the
+        weird "_compile" line below means I can use elm-reactor with this file
+        The next script inclusion should fail in development since I keep
+        the JS file out of src/ and instead build it in build/ -->
+        <script src="src/Main.js"></script>
+
+        <!-- got the next line from https://blog.ilias.xyz/elm-reactor-and-custom-html-9e7143553807
+        The next script inclusion should fail in production since I don't copy
+        the elm file to the server. -->
+        <script src="/_compile/src/Main.elm"></script>
+
+        <script src="src/default_model.js" type="text/javascript" charset="utf-8"></script>
+        <script>
+            // localStorage.clear(); // this is for debugging when bad model is stored
+
+            // read model from local storage to initialize Elm Main program
+            const storageKey = "model";
+            const modelString = localStorage.getItem(storageKey);
+            defaultModel.embedded = false;
+            defaultModelString = JSON.stringify(defaultModel, null, 1);
+
+            var model;
+            if (modelString !== null) { // restore from localStorage if possible
+                try {
+                    model = JSON.parse(modelString);
+                    console.log("successfully loaded stored model: " + JSON.stringify(model, null, 1));
+                    model.editorOptions.themes = themeNames; // this is defined in get-ace-themes.js
+                    console.log("read these themes from get-ace-themes.js: " + JSON.stringify(themeNames));
+                    model.embedded = false;
+                } catch (err) {
+                    console.log("error with trying to start program with stored model: " + JSON.stringify(model, null, 1));
+                    console.log("error was: " + err);
+                    console.log("using default model: " + defaultModelString);
+                    model = defaultModel;
+                }
+            } else { // otherwise use default model
+                console.log("no model stored locally; using default model: " + defaultModelString);
+                model = defaultModel;
+            }
+
+            var app;
+            try {
+                app = Elm.Main.fullscreen(model);
+            } catch (err) {
+                console.log("error with trying to start program with stored model: " + JSON.stringify(model, null, 1));
+                console.log("error was: " + err);
+                console.log("using default model: " + defaultModelString);
+                model = defaultModel;
+                app = Elm.Main.fullscreen(model);
+            }
+
+            // set up port to store model in localStorage
+            app.ports.save.subscribe(function(model) {
+                const modelString = JSON.stringify(model);
+                localStorage.setItem(storageKey, modelString);
+            });
+
+        </script>
+
+        <!-- set up ports to let Elm Main read uploaded file -->
+        <script src="src/file-upload.js" type="text/javascript" charset="utf-8"></script>
+
+    </body>
+</html>

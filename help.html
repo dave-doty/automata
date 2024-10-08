@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+
+<!--
+  Copyright (c) 2016, David Doty. All rights reserved.
+-->
+
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>automata simulator usage</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<h1>Automaton simulator usage instructions</h1>
+
+<p>
+This is a help file for the automaton simulator <a href="../automata/">here</a>.
+It can be used to create and test deterministic and nondeterministic finite automata, regular expressions, context-free grammars, and (deterministic) Turing machines.
+</p>
+
+<p>
+This application is mainly tested with the <a href="https://www.google.com/chrome/browser/desktop/index.html">Chrome</a> web browser,
+and it may have problems with other web browsers.
+</p>
+
+<p>
+Please send questions/bug reports to
+<script language="JavaScript">
+  var user = "doty";
+  var organization = "ucdavis";
+  var domain = "edu";
+  var email = user + "@" + organization + "." + domain;
+  document.write("<a href=mailto:"+email+">");
+  document.write(email);
+  document.write("</a>.");
+</script>
+
+
+This application was written in <a href="http://elm-lang.org/">Elm</a>.
+</p>
+
+
+<h1>How to use</h1>
+
+Play around!
+Most features are self-explanatory.
+Below are some notes about aspects that may require more detailed explanation.
+
+
+<h3>Entering input</h3>
+<p>
+    If the option "Run immediately" is selected, then all changes to input and automaton descriptions are immediately processed.
+    If you uncheck this box, then a "Run" button will appear, which must be pressed to see if the automaton description is valid, and if so, what is the result of running the automaton on the input.
+    This may be useful if the simulator is taking a long time to process each change, for instance if the Turing machine has an infinite loop.
+</p>
+<p>
+    To load a text file from your computer into the editor window, click the "Choose file" button next to "Upload:".
+    To save the contents of the editor to a file on your computer, click the "Download" button.
+    Pressing the "Load Default" button will replace the editor with a description of the default automaton for that type.
+</p>
+<p>
+    The contents of the editor are automatically saved locally in your browser's local storage,
+    so when you first open the page,
+    the editor should display the same thing you saw last time the page was open.
+    <strong>However</strong>, this is merely for convenience and should not be relied upon:
+    it is <strong>strongly recommended</strong> to save the file manually when you are done working.
+    If the app is updated, for instance, a bug or a change in storage format may erase your stored data.
+</p>
+
+<h3 id='reset'>Clearing local storage if app does not load</h3>
+<p>
+    There may be rare circumstances where the app does not load due to a bug in how it loads the automaton from your browser's local storage.
+    To clear local storage (which should reset the app), follow these steps.
+    <ol>
+    <li>Open the <a href="https://web.cs.ucdavis.edu/~doty/automata/">simulator web page</a>.</li>
+    <li>Open Developer Tools by pressing Ctrl+Shift+I in Chrome or Firefox.</li>
+    (Alternately, in Chrome click on the top right menu &rarr; More tools &rarr; Developer tools,
+    and in Firefox click on the top right menu &rarr; Web Developer &rarr; Web Developer Tools.)
+    <li>Once Developer Tools are open, select "Application" in Chrome or "Storage" in Firefox.</li>
+    <li>Click "Local Storage" on the left.</li>
+    <li>Right-click https://web.cs.ucdavis.edu/ and select "Clear".</li>
+    <li>Refresh the page.</li>
+    </ol>
+</p>
+
+
+<h3>Example input files</h3>
+<p>
+
+    The easiest way to explain the input file format is by example.
+    The files
+    <a href="examples/no-000-end.dfa" class="tt">no-000-end.dfa</a>,
+    <a href="examples/contains-010.regex" class="tt">contains-010.regex</a>,
+    <a href="examples/0-three-from-end.nfa" class="tt">0-three-from-end.nfa</a>,
+    <a href="examples/0s1s2s.nfa" class="tt">0s1s2s.nfa</a>,
+    <a href="examples/balanced-parens.cfg" class="tt">balanced-parens.cfg</a>,
+    <a href="examples/double.tm" class="tt">double.tm</a>,
+    <!-- <a href="examples/double-inferred-states.tm" class="tt">double-inferred-states.tm</a>, -->
+    and
+    <!-- <a href="examples/w-marker-w.tm" class="tt">w-marker-w.tm</a> -->
+    <a href="examples/palindrome-single-tape.tm" class="tt">palindrome-single-tape.tm</a>
+    are examples of input files for the finite automata, regular expression, context-free grammar, and Turing machine simulators.
+</p>
+
+<h3>Turing machine simulation time limit</h3>
+<p>
+    Turing machines are run for at most 10,000 steps.
+</p>
+
+<h3>Turing machine left move on leftmost tape cell</h3>
+<p>
+    If a Turing machine attempts to move a tape head left when it is already
+    on the leftmost tape cell, then the tape head stays where it is instead.
+</p>
+
+<h3>Step-by-step simulation</h3>
+<p>
+    The finite automata and Turing machine simulators have a back and forward
+    button to step through individual transitions of the machine.
+    In both cases the current state is highlighted.
+    In the case of Turing machines, the tape(s) are shown with the tape head
+    position(s) highlighted.
+</p>
+
+<p>
+    In the case of finite automata, the input is shown with a caret symbol
+    <label class="tt">^</label> placed in between the symbol just read and the
+    symbol about to be read.
+    For example, in reading the string <label class="tt">0010</label>, the
+    finite automaton will have four transitions and visit five states total,
+    with the "read position" being indicated in each case as:
+    <ul style="list-style-type: none;">
+        <li><label class="tt">^0 0 1 0 </label></li>
+        <li><label class="tt">&nbsp;0^0 1 0 </label></li>
+        <li><label class="tt">&nbsp;0 0^1 0 </label></li>
+        <li><label class="tt">&nbsp;0 0 1^0 </label></li>
+        <li><label class="tt">&nbsp;0 0 1 0^</label></li>
+    </ul>
+</p>
+
+<p>
+    If the input field and editor are not selected,
+    then the <label class="tt">,</label> and <label class="tt">.</label>
+    (comma and period) keys can
+    also be used to do forward and backward transitions. This can be useful
+    to quickly jump several transitions ahead by holding down the key.
+</p>
+
+<h3>Output conventions for Turing machines</h3>
+<p>
+    Turing machines have two different notions of "output".
+
+    <ol>
+      <li>
+          <em>Boolean</em> output, which is indicated by whether the final
+          configuration is in the accept state or the reject state.
+      </li>
+
+      <li>
+        <p>
+          <em>string</em> output, used to define Turing machines that compute
+          functions f: &Sigma;<sup>*</sup> &rarr; &Sigma;<sup>*</sup>.
+        </p>
+        <p>
+          The string output in the final configuration is represented on the <em>last</em> tape.
+          The output is defined to be the string
+          from the tape head to the first blank to the right (represented by an underscore
+          <label class="tt">_</label>), not including the blank.
+          This means that although the input is from the input alphabet, the
+          output could have nonblank symbols from the tape alphabet.
+        </p>
+        <p>
+          For instance, suppose the content of the last tape is
+          <label class="tt">bb_bbabbaba_abb_bbb__</label>
+          and the tape head at the leftmost
+          <label class="tt">a</label>.
+          Then the output string is
+          <label class="tt">abbaba</label>.
+
+          If the content of the last tape is
+          <label class="tt">_abbaba_abb_bbb__</label>
+          and the tape head is at position 0
+          (in other words, if the tape head is scanning a blank symbol),
+          then the output string is the empty string &epsilon;.
+        </p>
+      </li>
+    </ol>
+</p>
+
+<h3>Notes about file format</h3>
+<p>
+<ul>
+  <li>
+      Whitespace is mostly ignored.
+      Since whitespace otherwise gets trimmed away, whitespace characters cannot be in any alphabet.
+  </li>
+
+    </br>
+    <li>
+        State names can be multi-character strings, with characters that are either alphanumeric,
+        an underscore <div class="tt">_</div>,
+        a hyphen <div class="tt">-</div>,
+        parentheses <div class="tt">(</div> and <div class="tt">)</div>,
+        or a prime (apostophe) <div class="tt">'</div>.
+        Alphabet symbols should be single characters, which can be any symbol from the keyboard except for the following,
+        which have special syntactical meaning in the automata files:
+        <ul>
+          <!--
+          <li>
+              forward slash <div class="tt">/</div>, since two of them in a row indicate a comment
+          </li>
+          -->
+          <li>
+              curly braces <div class="tt">{</div> and <div class="tt">}</div>, used to enclose sets
+          </li>
+          <li>
+              comma <div class="tt">,</div>, used to separate lists of items (such as each state in the set of states)
+          </li>
+          <li>
+              pipe <div class="tt">|</div>, used for nondeterministic productions in CFGs and union in Regex's (this only applies to CFG and Regex symbols; DFA, NFA, and TM can use <div class="tt">|</div> as an alphabet symbol)
+          </li>
+          <li>
+              question mark <div class="tt">?</div>, used as a special character for Turing machine wildcard transition rules
+          </li>
+          <li>
+              whitespace characters (e.g., space, tab, newline)
+          </li>
+        </ul>
+    </li>
+
+    </br>
+    <li>
+      In regular expressions, only the following characters are allowed:
+      the operators
+      <label class="tt">( ) * + |</label>,
+      alphanumeric characters,
+      and (because of a homework problem involving email addresses)
+      the characters
+      <label class="tt">.</label>
+      and
+      <label class="tt">@</label>.
+      Note that <label class="tt">|</label> is used to mean &cup;.
+      Unlike most regular expression libraries in programming languages, <em>spaces are ignored</em> (including newlines),
+      which can help you to visually separate different parts of the regular expression.
+      <p>
+        <strong>
+            Warning:
+        </strong>
+        Comments are poorly supported in regular expressions.
+        If you are having trouble, try removing all comments.
+    </p>
+    </li>
+
+    </br>
+    <li>
+        The various parts of the automaton (<div class="tt">states</div>, <div class="tt">input_alphabet</div>, etc.) must be specified in the same order given in the example files.
+    </li>
+
+    </br>
+    <li>
+      <div class="tt">.nfa</div> files are almost the same syntax as <div class="tt">.dfa</div> files, with two exceptions:
+      <ul>
+        <li>
+            You can write
+            <div class="tt">q, -> r;</div>
+            to represent an &epsilon;-transition from state <div class="tt">q</div> to <div class="tt">r</div>.
+            See <a href="examples/0s1s2s.nfa" class="tt">0s1s2s.nfa</a> for an example.
+        </li>
+
+        <li>
+            You can write
+            <div class="tt">q,0 -> {r,s,t};</div>
+            to represent a nondeterministic transition to any of states <div class="tt">r,s,t</div>
+            (from state <div class="tt">q</div> while reading a <div class="tt">0</div>).
+            See <a href="examples/0-three-from-end.nfa" class="tt">0-three-from-end.nfa</a> for an example.
+            You can also write several lines to specify multiple output states, such as
+            <br/>
+            <div class="tt">q,0 -> r;</div>
+            <br/>
+            <div class="tt">q,0 -> s;</div>
+            <br/>
+            <div class="tt">q,0 -> t;</div>
+        </li>
+      </ul>
+    </li>
+
+    </br>
+    <li>
+        <p>
+        <div class="tt">.regex</div> files can define variables with subexpressions. For example 
+        <br/>
+        <div class="tt">A = 0|1;</div>
+        <br/>
+        <div class="tt">B = A2;</div>
+        <br/>
+        <div class="tt">34B | 56A</div>
+        <br/>
+        is equivalent to the regex <div class="tt">34((0|1)2) | 56(0|1)</div>.
+        Each subexpression may reference previous variables.
+        The last expression appears after the last semicolon (with no variable definition or equals sign).
+        This can help with avoiding typing long subexpressions multiple times.
+        Also, you can use longer variable names for subexpressions, which is helpful when the input alphabet contains all single letters. It will not work properly to use single-letter variable names such as A or b in this case.
+        For example
+        <br/>
+        <div class="tt">Sigma = q|w|e|r|t|y|u|i|o|p|a|s|d|f|g|h|j|k|l|z|x|c|v|b|n|m|Q|W|E|R|T|Y|U|I|O|P|A|S|D|F|G|H|J|K|L|Z|X|C|V|B|N|M;</div>
+        <br/>
+        <div class="tt">Sigma* abc Sigma* abc Sigma* abc Sigma*</div>
+        <br/>
+        matches any word with three appearances of <div class="tt">abc</div> in it.
+        </p>
+        <p>
+            <strong>
+                Warning:
+            </strong>
+            Do not use newlines within a subexpression. Most of the automata simulator is robust to newlines, but using newlines within a subexpression will put the symbols <tt>\n</tt> into your final regex. Put each subexpression on a single line.
+        </p>
+        <p>
+        However, be careful with this feature!
+        It works by simply substituting each subexpression in all the remaining ones.
+        So it is possible (and inadvisable) to write a short regex that will blow up the memory requirements exponentially,
+        e.g.,
+        <br/>
+        <div class="tt">A = 0123456789;</div>
+        <br/>
+        <div class="tt">B = AAAAAAAAAA;</div>
+        <br/>
+        <div class="tt">C = BBBBBBBBBB;</div>
+        <br/>
+        <div class="tt">D = CCCCCCCCCC;</div>
+        <br/>
+        <div class="tt">E = DDDDDDDDDD;</div>
+        <br/>
+        <div class="tt">F = EEEEEEEEEE;</div>
+        <br/>
+        <div class="tt">G = FFFFFFFFFF;</div>
+        <br/>
+        <div class="tt">G</div>
+        <br/>
+        which defines a regular expression with ten million symbols in it.
+        </p>
+    </li>
+    
+    </br>
+    <li>
+        <div class="tt">.cfg</div> files use character
+        <div class="tt">|</div> to represent multiple production rules on the same line, e.g.
+        <div class="tt">S -> A|B;</div> is equivalent to
+        <div class="tt">S -> A;</div> and <div class="tt">S -> B;</div>.
+        Note that an &epsilon;-production can be included by, e.g.,
+        <div class="tt">S -> A|;</div>
+        which is equivalent to
+        <div class="tt">S -> A;</div> and <div class="tt">S -> ;</div>
+    </li>
+
+  <!-- </br>
+  <li>
+      For a TM only (not for DFA/NFA),
+      if the line defining the states is
+      <div class="tt">states: ?</div>
+      then the simulator will infer the names of the states from the transition function and accept/reject/start states.
+      See <a href="examples/double-inferred-states.tm" class="tt">double-inferred-states.tm</a> for an example.
+      An advantage of listing the states explicitly is that the transition rows are are listed in the order given by the states.
+      If the states are inferred, the the rule is: start state is listed first, accept and reject listed last,
+      and other states are listed in the order in which they first appear as the <em>input</em> to the transition function,
+      and any states that are a transition function output, but never an input, are listed at the end just before the accept/reject states.
+  </li> -->
+
+  </br>
+  <li>
+      A k-tape TM is specified with transition rules using strings of length k for
+      the input symbols, the output symbols, and moves.
+      For example, the transition rule <div class="tt">q,001 -> r,111,RSL;</div>
+      is for a 3-tape TM and specifies that
+      in state <div class="tt">q</div>,
+      reading a <div class="tt">0</div> on the first tape,
+      a <div class="tt">0</div> on the second tape,
+      and a <div class="tt">1</div> on the third tape,
+      the TM should change to state <div class="tt">r</div>,
+      write a <div class="tt">1</div> on the first tape
+      and move its tape head right,
+      a <div class="tt">1</div> on the second tape
+      and don't move its tape head,
+      and a <div class="tt">1</div> on the third tape
+      and move its tape head left.
+  </li>
+
+  </br>
+  <li>
+      DFA transition functions must be defined explicitly on all inputs.
+      In other words, if you have |Q|=k states
+      and |&Sigma;|=m symbols, there must be exactly k&middot;m transitions for
+      &delta;, one for each pair (q,b), where q &isin; Q and b &isin; &Sigma;.
+  </li>
+
+  </br>
+  <li>
+      In contrast, NFA and TM transition functions do not need to be fully specified;
+      they take default values for any inputs not specified.
+      If &Delta;(q,b) is left unspecified for an NFA, then it is assumed &Delta;(q,b) = &#216;.
+      If &delta;(q,b) is left unspecified for a TM, then it is assumed
+      &delta;(q,b) = (q<sub>r</sub>,b,S), where q<sub>r</sub> is the reject state.
+      <!-- transition to the reject state, leaving the tape symbol(s) as they are, and not moving the tape head(s). -->
+  </li>
+
+
+  </br>
+  <li>
+      The files
+      <a href="examples/count-a-wildcard.tm" class="tt">count-a-wildcard.tm</a>
+      and
+      <a href="examples/w-marker-w-wildcard.tm" class="tt">w-marker-w-wildcard.tm</a>
+      show how to use the wildcard symbol <div class="tt">?</div>
+      to avoid typing many transitions that do the same thing.
+      The symbol matching the wildcard can either be written over
+      (if a non-wildcard symbol appears in the output, e.g., <div class="tt">q,0? -> r,11,RS;</div>)
+      or copied
+      (if <div class="tt">?</div> appears in the output, e.g., <div class="tt">q,0? -> r,1?,RS;</div>).
+      For each tape, if a wildcard appears as an output, then it must also appear as an input for the same tape,
+      and in this case it means "copy whatever symbol matched the wildcard in the input".
+      For example, the following is not allowed:
+      <div class="tt">q,00 -> r,1?,RS;</div>.
+
+      </br></br>
+
+      If there is a wildcard-containing transition that matches
+      a wildcard-free transition, the latter takes precedence. For example,
+      <a href="examples/count-a-wildcard.tm" class="tt">count-a-wildcard.tm</a>
+      uses the wildcard-free transitions
+      <div class="tt">q1,a_ -> q1,a0,RR;</div>
+      and
+      <div class="tt">q1,__ -> qA,__,SS;</div>,
+      if they match, before using the wildcard transition
+      <div class="tt">q1,?_ -> q1,?_,RS;</div>.
+
+      </br></br>
+
+      In fact, it is required to use this feature if there is a state <div class="tt">q</div> such that
+      two wildcard transitions with input state <div class="tt">q</div>
+      <em>overlap</em>, in the sense that they both match the same tuple of input symbols.
+      For example,
+      <div class="tt">q,0?1 -> r,111,RS;</div>
+      and
+      <div class="tt">q,??1 -> t,000,LL;</div>
+      both match tuples
+      <div class="tt">001</div>
+      and
+      <div class="tt">011</div>.
+      To disambiguate what to do if
+      <div class="tt">001</div>
+      or
+      <div class="tt">011</div>
+      is encountered when in state <div class="tt">q</div>,
+      there must be wildcard-free transitions with input state <div class="tt">q</div>
+      for both
+      <div class="tt">001</div>
+      and
+      <div class="tt">011</div>.
+      Thus the case above would be an error if there were not also transitions of the form
+      <div class="tt">q,001 -> ...</div>
+      and
+      <div class="tt">q,011 -> ...</div>.
+
+  </li>
+
+  </ul>
+
+</p>
+
+
+
+
+</body>
+</html>
