@@ -148,6 +148,8 @@ ${E.map(o=>o.join(",")).join(`
 `))}const Q=e;this.validateDelta(Q,A,C,g);try{return new Ku(Q.states,Q.input_alphabet,Q.start_state,Q.accept_states,Q.delta)}catch(t){throw new Error(`DFA construction failed: ${t instanceof Error?t.message:"Unknown error"}`)}}validateDelta(A,g,C,B){const e=this.buildDeltaSchema(A.states,A.input_alphabet),Q={delta:A.delta},t={type:"object",properties:{delta:e},required:["delta"]},E=this.ajv.compile(t);if(!E(Q)){const o=E.errors||[],s=gg.formatValidationErrors(g,C,o,B);throw new Error(s.map(n=>n.message).join(`
 
 `))}}buildDeltaSchema(A,g){const C={};for(const B of A){C[B]={type:"object",properties:{},additionalProperties:!1,errorMessage:{additionalProperties:`transition input symbol must be one of the defined input symbols: ${bA(g)}`}};for(const e of g)C[B].properties[e]={type:"string",enum:A,errorMessage:`transition input state must be one of the defined states: ${bA(A)}`}}return{type:"object",properties:C,additionalProperties:!1,errorMessage:{additionalProperties:`transition input state must be one of the defined states: ${bA(A)}`}}}static getDefaultYAML(){return`# DFA recognizing { x in {0,1}* | x does not end in 000 }
+# note YAML syntax allows lists in JSON syntax like [q, q0, q00, q000]
+# but also with dashes on separate lines like states is specified below
 
 states: 
   - q      # last bit was a 1 or non-existent
