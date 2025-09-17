@@ -226,9 +226,10 @@ reject_state: qR
 
 delta:
   s:
+    _: [qA, _, S]
     0: [r00, x, R]
     1: [r11, x, R]
-    x: [qA, x, S]    # empty string is palindrome
+    x: [qA, x, S]
   r00:
     0: [r00, 0, R]
     1: [r01, 1, R]
