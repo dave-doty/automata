@@ -148,8 +148,8 @@ ${E.map(o=>o.join(",")).join(`
 `))}const B=t;this.validateDelta(B,A,e,g);try{return new Gd(B.states,B.input_alphabet,B.start_state,B.accept_states,B.delta)}catch(Q){throw new Error(`DFA construction failed: ${Q instanceof Error?Q.message:"Unknown error"}`)}}validateDelta(A,g,e,C){const t=this.buildDeltaSchema(A.states,A.input_alphabet),B={delta:A.delta},Q={type:"object",properties:{delta:t},required:["delta"]},E=this.ajv.compile(Q);if(!E(B)){const o=E.errors||[],s=sg.formatValidationErrors(g,e,o,C);throw new Error(s.map(n=>n.message).join(`
 
 `))}}buildDeltaSchema(A,g){const e={};for(const C of A){e[C]={type:"object",properties:{},additionalProperties:!1,errorMessage:{additionalProperties:`transition input symbol must be one of the defined input symbols: ${PA(g)}`}};for(const t of g)e[C].properties[t]={type:"string",enum:A,errorMessage:`transition input state must be one of the defined states: ${PA(A)}`}}return{type:"object",properties:e,additionalProperties:!1,errorMessage:{additionalProperties:`transition input state must be one of the defined states: ${PA(A)}`}}}static getDefaultYAML(){return`# DFA recognizing { x in {0,1}* | x does not end in 000 }
-# note YAML syntax allows lists in JSON syntax like [q, q0, q00, q000]
-# but also with dashes on separate lines like states is specified below
+# YAML syntax allows lists in JSON syntax such as [q, q0, q00]
+# but also with dashes on separate lines as states is specified below.
 
 states: 
   - q      # last bit was a 1 or non-existent
@@ -165,20 +165,22 @@ start_state: q
 # accept if last three bits were not 000
 accept_states: [q, q0, q00]
 
+# if we see a 0, move closer to state q000
+# if we see a 1, reset back to state q
 delta:
-  # if we see a 1, reset
   q:
-    1: q
     0: q0    # if we see a 0, count one more 0 than before
+    1: q     # YAML requires a space after the colon
+             # typing 1:q instead would produce an error
   q0:
+    0: q00   # one more 0
     1: q
-    0: q00
   q00:
+    0: q000  # one more 0
     1: q
-    0: q000
   q000:
-    1: q
-    0: q000  # until we get to three`}}class Fd{states;inputAlphabet;startState;acceptStates;delta;constructor(A,g,e,C,t){if(A.length===0)throw new Error("states cannot be empty");if(g.length===0)throw new Error("input_alphabet cannot be empty");for(const B of g)if(B.length!==1)throw new Error(`Each symbol in input_alphabet must be exactly one character, got: "${B}"`);if(!A.includes(e))throw new Error(`start_state "${e}" not in state list ${PA(A)}`);for(const B of C)if(!A.includes(B))throw new Error(`accept_state "${B}" not in state list ${PA(A)}`);for(const[B,Q]of Object.entries(t)){if(!A.includes(B))throw new Error(`state "${B}" not in state list ${PA(A)}`);for(const[E,o]of Object.entries(Q)){if(E!==""&&!g.includes(E))throw new Error(`symbol "${E}" not in alphabet ${PA(g)}`);for(const s of o)if(!A.includes(s))throw new Error(`next state "${s}" not in state set ${PA(A)}`)}}this.states=[...A],this.inputAlphabet=[...g],this.startState=e,this.acceptStates=[...C],this.delta={};for(const[B,Q]of Object.entries(t))for(const[E,o]of Object.entries(Q)){const s=Jg(B,E);this.delta[s]=[...o]}}accepts(A){UC(this.inputAlphabet,A);const g=this.stateSetsVisited(A);return g[g.length-1].some(C=>this.acceptStates.includes(C))}stateSetsVisited(A){UC(this.inputAlphabet,A);const g=[],e=this.epsilonClosure(new Set([this.startState]));g.push(Array.from(e).sort());for(let C=0;C<A.length;C++){const t=A[C],B=new Set(g[g.length-1]),Q=new Set;for(const o of B){const s=Jg(o,t),n=this.delta[s];n&&n.forEach(r=>Q.add(r))}const E=this.epsilonClosure(Q);g.push(Array.from(E).sort())}return g}epsilonClosure(A){const g=new Set,e=Array.from(A);for(;e.length>0;){const C=e.shift();if(RI(C!==void 0,"State should not be undefined"),!g.has(C)){g.add(C);const t=Jg(C,""),B=this.delta[t];if(B)for(const Q of B)e.push(Q)}}return g}transitionStr(A,g){if(g!==""&&(g.length!==1||!this.inputAlphabet.includes(g)))throw new Error(`"${g}" is not contained in input alphabet ${this.inputAlphabet}`);const e=Jg(A,g),C=this.delta[e];if(C&&C.length>0)return`${g.length>0?g:"ε"} → ${PA(C)}`}transitionDefined(A,g){const e=Jg(A,g),C=this.delta[e];return C!==void 0&&C.length>0}deltaToString(){const A=[];let g=0;for(const e of this.states)for(const C of[...this.inputAlphabet,""]){const t=`${e},${C}`.length;t>g&&(g=t)}for(const e of this.states)for(const C of[...this.inputAlphabet,""]){const t=Jg(e,C),B=this.delta[t];if(B&&B.length>0){const E=`${e},${C||"ε"}`.padStart(g);A.push(`${E} → ${B.join(",")}`)}}return A.join(`
+    0: q000  # until we get to three, then stay here until we see a 1
+    1: q`}}class Fd{states;inputAlphabet;startState;acceptStates;delta;constructor(A,g,e,C,t){if(A.length===0)throw new Error("states cannot be empty");if(g.length===0)throw new Error("input_alphabet cannot be empty");for(const B of g)if(B.length!==1)throw new Error(`Each symbol in input_alphabet must be exactly one character, got: "${B}"`);if(!A.includes(e))throw new Error(`start_state "${e}" not in state list ${PA(A)}`);for(const B of C)if(!A.includes(B))throw new Error(`accept_state "${B}" not in state list ${PA(A)}`);for(const[B,Q]of Object.entries(t)){if(!A.includes(B))throw new Error(`state "${B}" not in state list ${PA(A)}`);for(const[E,o]of Object.entries(Q)){if(E!==""&&!g.includes(E))throw new Error(`symbol "${E}" not in alphabet ${PA(g)}`);for(const s of o)if(!A.includes(s))throw new Error(`next state "${s}" not in state set ${PA(A)}`)}}this.states=[...A],this.inputAlphabet=[...g],this.startState=e,this.acceptStates=[...C],this.delta={};for(const[B,Q]of Object.entries(t))for(const[E,o]of Object.entries(Q)){const s=Jg(B,E);this.delta[s]=[...o]}}accepts(A){UC(this.inputAlphabet,A);const g=this.stateSetsVisited(A);return g[g.length-1].some(C=>this.acceptStates.includes(C))}stateSetsVisited(A){UC(this.inputAlphabet,A);const g=[],e=this.epsilonClosure(new Set([this.startState]));g.push(Array.from(e).sort());for(let C=0;C<A.length;C++){const t=A[C],B=new Set(g[g.length-1]),Q=new Set;for(const o of B){const s=Jg(o,t),n=this.delta[s];n&&n.forEach(r=>Q.add(r))}const E=this.epsilonClosure(Q);g.push(Array.from(E).sort())}return g}epsilonClosure(A){const g=new Set,e=Array.from(A);for(;e.length>0;){const C=e.shift();if(RI(C!==void 0,"State should not be undefined"),!g.has(C)){g.add(C);const t=Jg(C,""),B=this.delta[t];if(B)for(const Q of B)e.push(Q)}}return g}transitionStr(A,g){if(g!==""&&(g.length!==1||!this.inputAlphabet.includes(g)))throw new Error(`"${g}" is not contained in input alphabet ${this.inputAlphabet}`);const e=Jg(A,g),C=this.delta[e];if(C&&C.length>0)return`${g.length>0?g:"ε"} → ${PA(C)}`}transitionDefined(A,g){const e=Jg(A,g),C=this.delta[e];return C!==void 0&&C.length>0}deltaToString(){const A=[];let g=0;for(const e of this.states)for(const C of[...this.inputAlphabet,""]){const t=`${e},${C}`.length;t>g&&(g=t)}for(const e of this.states)for(const C of[...this.inputAlphabet,""]){const t=Jg(e,C),B=this.delta[t];if(B&&B.length>0){const E=`${e},${C||"ε"}`.padStart(g);A.push(`${E} → ${B.join(",")}`)}}return A.join(`
 `)}toString(){return[`states:         ${PA(this.states)}`,`input_alphabet: ${PA(this.inputAlphabet)}`,`start_state:    ${this.startState}`,`accept_states:  ${PA(this.acceptStates)}`,`delta:          ${this.deltaToString().split(`
 `).join(`
                 `)}`].join(`
